@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="style.css">
+    <title>MelodyBox | Admin Upload</title>
+</head>
+<body>
+    <div class="app-container" style="display: block; padding: 50px;">
+        <div class="glass" style="max-width: 500px; margin: auto; padding: 30px;">
+            <h2>Upload New Song</h2>
+            <form id="uploadForm">
+                <input type="text" id="title" placeholder="Song Title" required style="width:100%; margin: 10px 0; padding: 10px;">
+                <input type="text" id="artist" placeholder="Artist Name" required style="width:100%; margin: 10px 0; padding: 10px;">
+                
+                <label>Select MP3 File:</label>
+                <input type="file" id="audioFile" accept="audio/*" required style="margin: 10px 0;">
+                
+                <label>Select Cover Image:</label>
+                <input type="file" id="imageFile" accept="image/*" required style="margin: 10px 0;">
+                
+                <button type="submit" class="glass" style="background: #1db954; color: white; padding: 10px 20px; border: none; cursor: pointer; width: 100%;">Upload to Cloud</button>
+            </form>
+            <div id="status"></div>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('uploadForm');
+        form.onsubmit = async (e) => {
+            e.preventDefault();
+            document.getElementById('status').innerText = "Uploading... please wait.";
+
+            const formData = new FormData();
+            formData.append('title', document.getElementById('title').value);
+            formData.append('artist', document.getElementById('artist').value);
+            formData.append('audio', document.getElementById('audioFile').files[0]);
+            formData.append('image', document.getElementById('imageFile').files[0]);
+
+            const res = await fetch('http://localhost:5000/api/songs/upload', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (res.ok) {
+                document.getElementById('status').innerText = "Upload Successful!";
+                form.reset();
+            } else {
+                document.getElementById('status').innerText = "Upload Failed.";
+            }
+        };
+    </script>
+</body>
+</html>
